@@ -1,144 +1,234 @@
-﻿<div class="login_wrapper">
+﻿<div class="login_wrapper" ng-controller="RegisterController">
     <div class="row">
         <section class="login_content">
-            <div class="wizard">
-                <div class="wizard-inner">
-                    <div class="connecting-line"></div>
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active">
-                            <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="" data-original-title="Step 1">
-                                <span class="round-tab">
-                                    <i class="glyphicon glyphicon-user"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li role="presentation" class="disabled">
-                            <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="" data-original-title="Step 2">
-                                <span class="round-tab">
-                                    <i class="glyphicon glyphicon-eye-open"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li role="presentation" class="disabled">
-                            <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="" data-original-title="Step 3">
-                                <span class="round-tab">
-                                    <i class="glyphicon glyphicon-pencil"></i>
-                                </span>
-                            </a>
-                        </li>
-                        <li role="presentation" class="disabled">
-                            <a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" title="" data-original-title="Complete">
-                                <span class="round-tab">
-                                    <i class="glyphicon glyphicon-ok"></i>
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
+            @*<div class="wizard">
+            <div class="wizard-inner">
+                <div class="connecting-line"></div>
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" data-original-title="Step 1">
+                            <span class="round-tab">
+                                <i class="glyphicon glyphicon-user"></i>
+                            </span>
+                        </a>
+                    </li>
+                    <li role="presentation" ng-class="{disabled: step2Disabled}">
+                        <a href="#step2" data-toggle="{{step2State}}" aria-controls="step2" role="tab" title="" data-original-title="Step 2">
+                            <span class="round-tab">
+                                <i class="glyphicon glyphicon-eye-open"></i>
+                            </span>
+                        </a>
+                    </li>
+                    <li role="presentation" ng-class="{disabled: step3Disabled}">
+                        <a href="#step3" data-toggle="{{step3State}}" aria-controls="step3" role="tab" title="" data-original-title="Step 3">
+                            <span class="round-tab">
+                                <i class="glyphicon glyphicon-pencil"></i>
+                            </span>
+                        </a>
+                    </li>
+                    <li role="presentation" ng-class="{disabled: step4Disabled}">
+                        <a href="#step4" data-toggle="{{step4State}}" aria-controls="complete" role="tab" title="" data-original-title="Complete">
+                            <span class="round-tab">
+                                <i class="glyphicon glyphicon-ok"></i>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <form method="POST" id="register">
+                <h1>Create Account</h1>
+                <div class="alert alert-danger" role="alert" id="fail" style="display: none; text-shadow: none; color: #000">
+                    Registration Failed
+                    <br>
+                    Email has already been used
                 </div>
-                <form method="POST" id="register">
-                    <h1>Create Account</h1>
-                    <div class="alert alert-danger" role="alert" id="fail" style="display: none; text-shadow: none; color: #000">
-                        Registration Failed
+                <div class="tab-content">
+                    <fieldset class="tab-pane active" role="tabpanel" id="step1">
+                        <h4>Step 1</h4>
+                        <div style="margin: 0 0 20px;">
+                            <input type="number" min="" step="1" class="form-control" name="age" placeholder="Age" required="">
+                        </div>
+                        <div style="margin: 0 0 20px;">
+                            <select class="form-control" name="gender" style="text-align: center; text-align-last: center;">
+                                <option selected="selected" disabled="disabled" value=""> --- Gender --- </option>
+                                <option value="0">Female</option>
+                                <option value="1">Male</option>
+                            </select>
+                        </div>
+                        <div>
+                            <input type="email" class="form-control" name="email" placeholder="Email" required="">
+                        </div>
+                        <div class="clearfix"></div>
+                        <button ng-click="goToStep2()" class="btn btn-default next-step" type="button">Next</button>
+                    </fieldset>
+                    <fieldset class="tab-pane" role="tabpanel" id="step2">
+                        <h4>Step 2</h4>
+                        <div style="text-align: left; color: darkred;">
+                            <p>
+                                Password must meet the following criteria
+                            </p><ol>
+                                <li>More than 8 characters long</li>
+                                <li>At least 1 special character (e.g. @@, $, %)</li>
+                                <li>At least 1 number (e.g. 3, 5, 2)</li>
+                                <li>At least 1 lowercase letter (e.g. a, h, k)</li>
+                                <li>At least 1 uppercase letter (e.g. Q, L, G)</li>
+                            </ol>
+                            The indicator will tell you if password is strong enough
+                            <p></p>
+                        </div>
+                        <div>
+                            <input type="password" class="form-control" name="password" id="password" placeholder="Password" required=""><div class="progress "><div class="progress-bar progress-bar-danger" style="width: 1%;"><span class="password-verdict" style="white-space: nowrap;"></span></div></div>
+                        </div>
+                        <div>
+                            <input type="password" class="form-control" id="password2" placeholder="Confirm Password" required="">
+                        </div>
+                        <div class="clearfix"></div>
                         <br>
-                        Email has already been used
-                    </div>
-                    <div class="tab-content">
+                        <button class="btn btn-default prev-step" type="button">Previous</button>
+                        <button class="btn btn-default next-step" type="button">Next</button>
+                    </fieldset>
+                    <fieldset class="tab-pane" role="tabpanel" id="step3">
+                        <h4>Step 3</h4>
+                        <div style="text-align: left; color: darkred;">
+                            <p>
+                                Please create a passphrase that meets the following criteria
+                            </p><ol>
+                                <li>Only lowercase letters</li>
+                                <li>12 or more characters</li>
+                            </ol>
+                            The stronger the passphrase gets the faster the rabbit will run
+                            <p></p>
+                        </div>
+                        <div>
+                            <input type="text" class="form-control" name="passphrase" id="passphrase" placeholder="Enter Passphrase" onkeydown="checkPassphrase()" required="">
+                        </div>
+                        <div>
+                            <input type="text" class="form-control" name="confirmpassphrase" id="passphrase2" placeholder="Confirm Passphrase" required="">
+                        </div>
+                        <div>
+                            <img src="~/images/00-slowest.gif" id="rabbit" class="img-thumbnail">
+                        </div>
+                        <div class="clearfix"></div>
+                        <br>
+                        <button class="btn btn-default prev-step" type="button">Previous</button>
+                        <button class="btn btn-default next-step" type="button">Next</button>
+                    </fieldset>
+                    <fieldset class="tab-pane" role="tabpanel" id="step4">
+                        <h4>Complete</h4>
+                        <p>
+                            You have successfully completed all steps.
+                            <br>
+                            Please click register to countinue
+                            <br>
+                            or go back and rectify any issues
+                        </p>
+                        <div class="clearfix"></div>
+                        <button class="btn btn-default prev-step" type="button">Previous</button>
+                        <button type="submit" class="btn btn-default submit">Register</button>
+                    </fieldset>
+                </div>
+                <div class="separator">
+                    <p class="change_link">
+                        Already a member ?
+                        <br>
+                        <a href="Login" class="to_register">Log in</a>
+                    </p>
+                </div>
+            </form>
+        </div>*@
+            <form role="form" class="form-horizontal" name="registerForm">
+                <uib-tabset active="active">
+                    <uib-tab index="0">
+                        <uib-tab-heading>
+                            <i class="glyphicon glyphicon-user"></i>
+                        </uib-tab-heading>
+                        <h1>Create Account</h1>
                         <fieldset class="tab-pane active" role="tabpanel" id="step1">
                             <h4>Step 1</h4>
-                            <div style="margin: 0 0 20px;">
-                                <input type="number" class="form-control" name="age" placeholder="Age" required="">
+                            <div class="row form-group">
+                                <input type="number" min="13" ng-model="age" ng-change="validateStep1()" step="1" class="form-control" name="age" placeholder="Age" required>
                             </div>
-                            <div style="margin: 0 0 20px;">
-                                <select class="form-control" name="gender" style="text-align: center; text-align-last: center;">
-                                    <option selected="true" disabled="disabled" value=""> --- Gender --- </option>
+                            <div class="row form-group">
+                                <select class="form-control" ng-model="gender" ng-change="validateStep1()" name="gender" style="text-align: center; text-align-last: center;">
+                                    <option selected="selected" disabled="disabled" value=""> --- Gender --- </option>
                                     <option value="0">Female</option>
                                     <option value="1">Male</option>
                                 </select>
                             </div>
-                            <div>
-                                <input type="email" class="form-control" name="email" placeholder="Email" required="">
+                            <div class="row form-group">
+                                <input type="email" ng-model="email" ng-change="validateStep1()" class="form-control" name="email" placeholder="Email" required>
                             </div>
-                            <div class="clearfix"></div>
-                            <button class="btn btn-default next-step" type="button">Next</button>
+                            <div class="row form-group">
+                                <button ng-disabled="!canProceedToStep2()" ng-click="goToStep2()" class="btn btn-default next-step" type="button">Next</button>
+                            </div>
                         </fieldset>
-
-                        <fieldset class="tab-pane" role="tabpanel" id="step2">
-                            <h4>Step 2</h4>
-                            <div style="text-align: left; color: darkred;">
-                                <p>
-                                    Password must meet the following criteria
-                                </p><ol>
-                                    <li>More than 8 characters long</li>
-                                    <li>At least 1 special character (e.g. @@, $, %)</li>
-                                    <li>At least 1 number (e.g. 3, 5, 2)</li>
-                                    <li>At least 1 lowercase letter (e.g. a, h, k)</li>
-                                    <li>At least 1 uppercase letter (e.g. Q, L, G)</li>
-                                </ol>
-                                The indicator will tell you if password is strong enough
-                                <p></p>
+                    </uib-tab>
+                    <uib-tab index="1" disable="step2Disabled">
+                        <uib-tab-heading>
+                            <i class="glyphicon glyphicon-eye-open"></i>
+                        </uib-tab-heading>
+                        <h1>Create Account</h1>
+                        <div class="row form-group" style="text-align:justify">
+                            <div class="checkbox">
+                                <checkbox class="btn btn-success" ng-model="isValidLength" ng-show="isValidLength" disabled></checkbox>
+                                <checkbox class="btn btn-danger" ng-model="isValidLength" ng-show="!isValidLength" disabled></checkbox>
+                                More than 8 characters long
                             </div>
-                            <div>
-                                <input type="password" class="form-control" name="password" id="password" placeholder="Password" required=""><div class="progress "><div class="progress-bar progress-bar-danger" style="width: 1%;"><span class="password-verdict" style="white-space: nowrap;"></span></div></div>
+                            <div class="checkbox">
+                                <checkbox class="btn btn-success" ng-model="hasSpecialCharacter" ng-show="hasSpecialCharacter" disabled></checkbox>
+                                <checkbox class="btn btn-danger" ng-model="hasSpecialCharacter" ng-show="!hasSpecialCharacter" disabled></checkbox>
+                                At least 1 special character (e.g. @@, $, %)
                             </div>
-                            <div>
-                                <input type="password" class="form-control" id="password2" placeholder="Confirm Password" required="">
+                            <div class="checkbox">
+                                <checkbox class="btn btn-success" ng-model="hasDigit" ng-show="hasDigit" disabled></checkbox>
+                                <checkbox class="btn btn-danger" ng-model="hasDigit" ng-show="!hasDigit" disabled></checkbox>
+                                At least 1 number (e.g. 3, 5, 2)
                             </div>
-                            <div class="clearfix"></div>
-                            <br>
-                            <button class="btn btn-default prev-step" type="button">Previous</button>
-                            <button class="btn btn-default next-step" type="button">Next</button>
-                        </fieldset>
-                        <fieldset class="tab-pane" role="tabpanel" id="step3">
-                            <h4>Step 3</h4>
-                            <div style="text-align: left; color: darkred;">
-                                <p>
-                                    Please create a passphrase that meets the following criteria
-                                </p><ol>
-                                    <li>Only lowercase letters</li>
-                                    <li>12 or more characters</li>
-                                </ol>
-                                The stronger the passphrase gets the faster the rabbit will run
-                                <p></p>
+                            <div class="checkbox">
+                                <checkbox class="btn btn-success" ng-model="hasLowercaseLetter" ng-show="hasLowercaseLetter" disabled></checkbox>
+                                <checkbox class="btn btn-danger" ng-model="hasLowercaseLetter" ng-show="!hasLowercaseLetter" disabled></checkbox>
+                                At least 1 lowercase letter (e.g. a, h, k)
                             </div>
-                            <div>
-                                <input type="text" class="form-control" name="passphrase" id="passphrase" placeholder="Enter Passphrase" onkeydown="checkPassphrase()" required="">
+                            <div class="checkbox">
+                                <checkbox class="btn btn-success" ng-model="hasUppercaseLetter" ng-show="hasUppercaseLetter" disabled></checkbox>
+                                <checkbox class="btn btn-danger" ng-model="hasUppercaseLetter" ng-show="!hasUppercaseLetter" disabled></checkbox>
+                                At least 1 uppercase letter (e.g. Q, L, G)
                             </div>
-                            <div>
-                                <input type="text" class="form-control" name="confirmpassphrase" id="passphrase2" placeholder="Confirm Passphrase" required="">
+                        </div>
+                        <div class="row form-group">
+                            <input type="password" ng-model="password" ng-change="password1Change()" class="form-control" name="password" id="password" placeholder="Password" required>
+                        </div>
+                        <div class="row form-group">
+                            <input type="password" ng-model="password2" ng-change="password2Change()" class="form-control" name="password2" id="password2" placeholder="Confirm Password" required>
+                            <div ng-if="passwordsNotMatching">
+                                <small style="color: red">Passwords to not match</small>
                             </div>
-                            <div>
-                                <img src="images/00-slowest.gif" id="rabbit" class="img-thumbnail">
-                            </div>
-                            <div class="clearfix"></div>
-                            <br>
-                            <button class="btn btn-default prev-step" type="button">Previous</button>
-                            <button class="btn btn-default next-step" type="button">Next</button>
-                        </fieldset>
-
-                        <fieldset class="tab-pane" role="tabpanel" id="complete">
-                            <h4>Complete</h4>
-                            <p>
-                                You have successfully completed all steps.
-                                <br>
-                                Please click register to countinue
-                                <br>
-                                or go back and rectify any issues
-                            </p>
-                            <div class="clearfix"></div>
-                            <button class="btn btn-default prev-step" type="button">Previous</button>
-                            <button class="btn btn-default submit">Register</button>
-                        </fieldset>
-
-                    </div>
-
-                    <div class="separator">
-                        <p class="change_link">
-                            Already a member ?
-                            <br>
-                            <a href="Home\Login" class="to_register">Log in</a>
-                        </p>
-                    </div>
-                </form>
+                        </div>
+                        <div class="form-group">
+                            <button ng-click="goToStep1()" class="btn btn-default prev-step" type="button">Previous</button>
+                            <button ng-disabled="!canProceedToStep3()" ng-click="goToStep3()" class="btn btn-default next-step" type="button">Next</button>
+                        </div>
+                    </uib-tab>
+                    <uib-tab index="2" disable="step3Disabled">
+                        <uib-tab-heading>
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </uib-tab-heading>
+                        <h1>Create Account</h1>
+                    </uib-tab>
+                    <uib-tab index="4" disable="step4Disabled">
+                        <uib-tab-heading>
+                            <i class="glyphicon glyphicon-ok"></i>
+                        </uib-tab-heading>
+                        <h1>Create Account</h1>
+                    </uib-tab>
+                </uib-tabset>
+            </form>
+            <div class="separator">
+                <p class="change_link">
+                    Already a member ?
+                    <br>
+                    <a href="Login" class="to_register">Log in</a>
+                </p>
             </div>
         </section>
     </div>
