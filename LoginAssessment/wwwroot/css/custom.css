@@ -4176,7 +4176,7 @@ form:after {
             content: "";
             height: 1px;
             position: absolute;
-            top: 90px;
+            top: 10px;
             width: 27%
         }
 
@@ -4197,7 +4197,7 @@ form:after {
             content: "";
             height: 1px;
             position: absolute;
-            top: 90px;
+            top: 10px;
             width: 20%
         }
 

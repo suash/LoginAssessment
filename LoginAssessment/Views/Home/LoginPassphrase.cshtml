@@ -1,0 +1,32 @@
+﻿<div class="login_wrapper">
+    <div class="animate form login_form">
+        <section class="login_content">
+            <form method="POST" action="~/Home/LoginPassphrase" id="login_phrase">
+                <h1>Passphrase</h1>
+                <div class="alert alert-success" role="alert" id="fail" style="text-shadow: none; color: #000">
+                    <h5>Username and Password Correct</h5>
+                    You have successfully entered your username and password. Please enter passphrase below to finish login.
+                </div>
+                <div>
+                    <input type="password" name="Passphrase" class="form-control" placeholder="Passphrase" required>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-default submit">Log in</button>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="separator">
+                    <p class="change_link">
+                        New to site?
+                        <a href="Home/Register" class="to_register">Create Account</a><br>
+                        <a href="Home/ForgotPassphrase" class="to_register">Forgot Passphrase</a>
+                    </p>
+
+                    <div class="clearfix"></div>
+                    <br>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>

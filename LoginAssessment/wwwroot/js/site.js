@@ -1,9 +1,82 @@
-﻿angular.module('assessment', ['ngAnimate', 'ngSanitize', 'ui.bootstrap']);
+﻿var app = angular.module('assessment', ['ngAnimate', 'ngSanitize', 'ui.bootstrap', 'ngPasscheck']);
 
-angular.module('assessment').controller('RegisterController', function ($scope, $window) {
+app.config(function(passCheckProvider) {
+        passCheckProvider.init({
+            policies: {
+                weak: {
+                    pattern: '[a-z ]{12,}$',
+                    min: 12
+                },
+                low: {
+                    pattern: '[a-z ]{15,}$',
+                    min: 15
+                },
+                medium: {
+                    pattern: '[a-z ]{18,}$',
+                    min: 18
+                },
+                strong: {
+                    pattern: '[a-z ]{25,}$',
+                    min: 25
+                },
+                stronger: {
+                    pattern: '[a-z ]{35,}$',
+                    min: 35
+                },
+                strongest: {
+                    pattern: '[a-z ]{50,}$',
+                    min: 50
+                }
+            },
+            scoring: {
+                base: 1,
+                weak: {
+                    min: 1,
+                    max: 10,
+                    bonus: 1
+                },
+                low: {
+                    min: 11,
+                    max: 15,
+                    bonus: 1
+                },
+                medium: {
+                    min: 16,
+                    max: 40,
+                    bonus: 1.05
+                },
+                strong: {
+                    min: 41,
+                    max: 60,
+                    bonus: 1.25
+                },
+                stronger: {
+                    min: 61,
+                    max: 80,
+                    bonus: 1.50
+                },
+                strongest: {
+                    min: 81,
+                    max: 100,
+                    bonus: 1.50
+                }
+            },
+            common: {
+                test: true,
+                path: '~/wwwroot/lib/ng-passcheck/dist/passwords.json'
+            }
+        });
+    });
+
+app.controller('RegisterController', function ($scope, $window) {
     $scope.step2Disabled = true;
     $scope.step3Disabled = true;
     $scope.step4Disabled = true;
+    $scope.age = 18;
+
+    $scope.$on('passwordStrength:result', function (event, value) {
+        $scope.strength = value;
+    });
 
     $scope.canProceedToStep2 = function () {
         return !$scope.step2Disabled;
@@ -13,9 +86,14 @@ angular.module('assessment').controller('RegisterController', function ($scope, 
         return !$scope.step3Disabled;
     };
 
+
+    $scope.canProceedToStep4 = function () {
+        return !$scope.step4Disabled;
+    };
+
     $scope.validateStep1 = function () {
         var form = $scope.registerForm;
-        var isvalid = form.age.$modelValue > 0 && form.gender.$modelValue >= 0 && form.email.$modelValue;
+        var isvalid = form.age.$modelValue > 0 && form.gender.$modelValue && form.email.$modelValue;
         $scope.step2Disabled = !isvalid;
     };
 
@@ -30,7 +108,13 @@ angular.module('assessment').controller('RegisterController', function ($scope, 
         $scope.step3Disabled = !isvalid;
     };
 
-    $scope.goToStep1 = function () {
+    $scope.validateStep3 = function() {
+        var form = $scope.registerForm;
+        var isvalid = form.passphrase.$modelValue && form.passphrase.$modelValue.length >= 12 && !$scope.passphraseNotMatching;
+        $scope.step4Disabled = !isvalid;
+    };
+
+    $scope.function = function () {
         $scope.active = 0;
     };
     
@@ -71,5 +155,11 @@ angular.module('assessment').controller('RegisterController', function ($scope, 
         $scope.passwordsNotMatching = form.password.$modelValue !== form.password2.$modelValue;
 
         $scope.validateStep2();
+    };
+
+    $scope.checkPassphraseMatch = function() {
+        var form = $scope.registerForm;
+        $scope.passphraseNotMatching = form.passphrase.$modelValue && form.passphrase.$modelValue !== form.passphrase2.$modelValue;
+        $scope.validateStep3();
     };
 });

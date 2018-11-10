@@ -1,0 +1,45 @@
+{
+  "name": "ng-passcheck",
+  "version": "1.0.2",
+  "homepage": "https://github.com/scniro/ng-passcheck",
+  "authors": [
+    "scniro <scniro@outlook.com>"
+  ],
+  "description": "A policy driven AngularJS directive to check password strength",
+  "main": "ng-passcheck.js",
+  "keywords": [
+    "password",
+    "angular",
+    "angularjs",
+    "passwordstrength",
+    "strength",
+    "passwords",
+    "passcheck",
+    "passchk"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "angular": "^1.2"
+  },
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "node_modules",
+    "demo-site",
+    "index.html",
+    "README.md",
+    "package.json",
+    "bower.json",
+    "gulpfile.js"
+  ],
+  "_release": "1.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.2",
+    "commit": "7cd3238e7b3d4d1f1ec855102cb82692e50cc063"
+  },
+  "_source": "https://github.com/scniro/ng-passcheck.git",
+  "_target": "^1.0.2",
+  "_originalSource": "ng-passcheck",
+  "_direct": true
+}
