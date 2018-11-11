@@ -239,6 +239,7 @@
                                 </div>
                             </div>
                             <div>
+                                <img ng-if="!strength" src="~/images/00-slowest.gif" id="rabbit" class="img-thumbnail">
                                 <img ng-if="strength && strength.score <= 10" src="~/images/00-slowest.gif" id="rabbit" class="img-thumbnail">
                                 <img ng-if="strength && strength.score > 10 && strength.score <= 15" src="~/images/01-slower.gif" id="rabbit" class="img-thumbnail">
                                 <img ng-if="strength && strength.score > 15 && strength.score <= 40" src="~/images/02-slow.gif" id="rabbit" class="img-thumbnail">

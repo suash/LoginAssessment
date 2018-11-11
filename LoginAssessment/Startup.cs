@@ -9,8 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LoginAssessment
 {
+    using Microsoft.AspNetCore.Identity;
+
     public class Startup
     {
+        public const string AnonymousUserEmail = "anony@mous.com";
+
         public Startup(IConfiguration configuration)
         {
             this.Configuration = configuration;
@@ -38,7 +42,7 @@ namespace LoginAssessment
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, UserManager<ApplicationUser> userManager)
         {
             if (env.IsDevelopment())
             {
@@ -54,6 +58,8 @@ namespace LoginAssessment
             // app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.SeedAnonymousUser(userManager);
 
             app.UseAuthentication();
 

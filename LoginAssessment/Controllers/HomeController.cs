@@ -67,6 +67,12 @@ namespace LoginAssessment.Controllers
             return this.View();
         }
 
+        [HttpGet]
+        public IActionResult ThankYou()
+        {
+            return this.View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -150,6 +156,61 @@ namespace LoginAssessment.Controllers
             }
 
             return this.BadRequest("Required fields not set");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginSuccess(LoginSuccessViewModel model)
+        {
+            if (this.User.Identity.IsAuthenticated)
+            {
+                var user = await this.users.FindByEmailAsync(this.User.Identity.Name);
+                user.SuccessfulLogins.Add(
+                    new LoginSuccess
+                    {
+                        LoginDeviceId = model.LoginDeviceId,
+                        LoginPreferenceId = model.LoginPreferenceId,
+                        LoginDateTime = DateTime.Now
+                    });
+
+                var result = await this.users.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return this.RedirectToAction("ThankYou");
+                }
+            }
+
+            return this.RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginFail(LoginFailViewModel model)
+        {
+            ApplicationUser user;
+            if (this.User.Identity.IsAuthenticated)
+            {
+                user = await this.users.FindByEmailAsync(this.User.Identity.Name);
+            }
+            else
+            {
+                user = await this.users.FindByEmailAsync(Startup.AnonymousUserEmail);
+            }
+
+            user.FailedLogins.Add(
+                new LoginFail
+                {
+                    LoginDeviceId = model.LoginDeviceId,
+                    LoginPreferenceId = model.LoginPreferenceId,
+                    LoginReasonId = model.LoginReasonId,
+                    LoginDateTime = DateTime.Now
+                });
+
+            var result = await this.users.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return this.RedirectToAction("ThankYou");
+            }
+
+            return this.RedirectToAction("Login");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
