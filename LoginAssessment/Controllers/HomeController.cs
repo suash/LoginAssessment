@@ -9,6 +9,7 @@ namespace LoginAssessment.Controllers
 
     using LoginAssessment.Data;
 
+    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Identity;
 
     public class HomeController : Controller
@@ -67,15 +68,52 @@ namespace LoginAssessment.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            return this.RedirectToAction("LoginPassphrase");
+            if (this.ModelState.IsValid)
+            {
+                var user = await this.users.FindByNameAsync(model.Email);
+                if (user != null)
+                {
+                    if (await this.users.CheckPasswordAsync(user, model.Password))
+                    {
+                        var authenticationProperties = new AuthenticationProperties
+                        {
+                            RedirectUri = "~/Home/LoginPassphrase",
+                            IsPersistent = true,
+                            ExpiresUtc = DateTimeOffset.UtcNow.Add(TimeSpan.FromMinutes(30))
+                        };
+
+                        await this.signInManager.SignInAsync(user, authenticationProperties);
+                        return this.RedirectToAction("LoginPassphrase");
+                    }
+                }
+                else
+                {
+                    return this.RedirectToAction("LoginFail");
+                }
+            }
+
+            return this.RedirectToAction("LoginFail");
         }
 
         [HttpPost]
-        public IActionResult LoginPassphrase(LoginPassphraseViewModel model)
+        public async Task<IActionResult> LoginPassphrase(LoginPassphraseViewModel model)
         {
-            return this.RedirectToAction("LoginPassphrase");
+            if (this.ModelState.IsValid)
+            {
+                var user = await this.users.FindByNameAsync(this.User.Identity.Name);
+                if (user != null)
+                {
+                    var passPhraseMatch = user.PassPhrase.Equals(model.PassPhrase, StringComparison.Ordinal);
+                    if (passPhraseMatch)
+                    {
+                        return this.RedirectToAction("LoginSuccess");
+                    }
+                }
+            }
+
+            return this.RedirectToAction("LoginFail");
         }
 
         [HttpPost]
