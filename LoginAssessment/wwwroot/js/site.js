@@ -163,3 +163,66 @@ app.controller('RegisterController', function ($scope, $window) {
         $scope.validateStep3();
     };
 });
+
+app.controller('PasswordResetController', function ($scope) {
+
+    $scope.password1Change = function () {
+        var form = $scope.passwordResetForm;
+        if (form.password.$modelValue) {
+            var passwordValue = form.password.$modelValue;
+            $scope.isValidLength = passwordValue.length > 8;
+            $scope.hasSpecialCharacter = new RegExp('[`~!@#$%^&*()\\-\\_=+,<.>]').test(passwordValue);
+            $scope.hasDigit = new RegExp('[0-9]').test(passwordValue);
+            $scope.hasLowercaseLetter = new RegExp('[a-z]').test(passwordValue);
+            $scope.hasUppercaseLetter = new RegExp('[A-Z]').test(passwordValue);
+        } else {
+            $scope.isValidLength = false;
+            $scope.hasSpecialCharacter = false;
+            $scope.hasDigit = false;
+            $scope.hasLowercaseLetter = false;
+            $scope.hasUppercaseLetter = false;
+        }
+
+        $scope.validateForm();
+    };
+
+    $scope.validateForm = function() {
+        var form = $scope.passwordResetForm;
+
+        var isvalid = $scope.isValidLength &&
+            $scope.hasSpecialCharacter &&
+            $scope.hasDigit &&
+            $scope.hasLowercaseLetter &&
+            $scope.hasUppercaseLetter &&
+            !$scope.passwordsNotMatching;
+
+        $scope.formInValid = !isvalid;
+    };
+
+    $scope.password2Change = function () {
+        var form = $scope.passwordResetForm;
+        $scope.passwordsNotMatching = form.password.$modelValue !== form.password2.$modelValue;
+
+        $scope.validateForm();
+    };
+
+});
+
+app.controller('PassphraseResetController', function($scope) {
+
+    $scope.$on('passwordStrength:result', function (event, value) {
+        $scope.strength = value;
+    });
+
+    $scope.checkPassphraseMatch = function () {
+        var form = $scope.passphraseResetForm;
+        $scope.passphraseNotMatching = form.passphrase.$modelValue && form.passphrase.$modelValue !== form.passphrase2.$modelValue;
+        $scope.validateForm();
+    };
+
+    $scope.validateForm = function () {
+        var form = $scope.passphraseResetForm;
+        var isvalid = form.passphrase.$modelValue && form.passphrase.$modelValue.length >= 12 && !$scope.passphraseNotMatching;
+        $scope.formInValid = !isvalid;
+    };
+});

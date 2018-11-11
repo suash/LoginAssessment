@@ -1,8 +1,26 @@
-﻿<div class="login_wrapper">
+﻿@{
+    <input type="hidden" value="@ViewBag.PasswordReset.ToString()" />
+    <input type="hidden" value="@ViewBag.Registered.ToString()" />
+}
+
+<div class="login_wrapper">
     <div class="animate form login_form">
         <section class="login_content">
             <form method="POST" action="~/Home/Login" id="login_pass" role="form" class="form-horizontal" name="loginForm">
                 <h1>Login Form</h1>
+                @if (ViewBag.PasswordReset.ToString() == "True")
+                {
+                    <div class="alert alert-success" role="alert" id="success" style="display: block; text-shadow: none; color: rgb(0, 0, 0);">
+                        Successfully Updated Password.<br>Login with your new password
+                    </div>
+                }
+                @if (ViewBag.Registered.ToString() == "True")
+                {
+                    <div class="alert alert-success" role="alert" id="success" style="display: block; text-shadow: none; color: rgb(0, 0, 0);">
+                        Successfully registered.<br>Login with your details below
+                    </div>
+                }
+
                 <div class="row">
                     <div class="form-group">
                         <input type="email" name="email" class="form-control" placeholder="Email" required>

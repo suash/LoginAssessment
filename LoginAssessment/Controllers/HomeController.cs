@@ -32,19 +32,29 @@ namespace LoginAssessment.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(bool? passwordReset = false, bool? registered = false)
         {
+            this.ViewBag.PasswordReset = passwordReset;
+            this.ViewBag.Registered = registered;
+
             return this.View();
         }
 
         [HttpGet]
-        public IActionResult LoginPassphrase()
+        public IActionResult LoginPassphrase(bool? passphraseReset = false)
         {
+            this.ViewBag.PassphraseReset = passphraseReset;
             return this.View();
         }
 
         [HttpGet]
         public IActionResult PasswordReset()
+        {
+            return this.View();
+        }
+
+        [HttpGet]
+        public IActionResult PassphraseReset()
         {
             return this.View();
         }
@@ -142,7 +152,7 @@ namespace LoginAssessment.Controllers
 
                 if (result.Succeeded)
                 {
-                    return this.Ok();
+                    this.RedirectToAction("Login", new { registered = true });
                 }
 
                 var message = string.Empty;
@@ -211,6 +221,56 @@ namespace LoginAssessment.Controllers
             }
 
             return this.RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PasswordReset(LoginViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await this.users.FindByNameAsync(model.Email);
+                if (user != null)
+                {
+                    string resetToken = await this.users.GeneratePasswordResetTokenAsync(user);
+                    var result = await this.users.ResetPasswordAsync(user, resetToken, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        return this.RedirectToAction("Login", new { passwordReset = true });
+                    }
+                }
+                else
+                {
+                    return this.RedirectToAction("LoginFail");
+                }
+            }
+
+            return this.RedirectToAction("LoginFail");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PassphraseReset(LoginPassphraseViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await this.users.FindByNameAsync(this.User.Identity.Name);
+                if (user != null)
+                {
+                    user.PassPhrase = model.PassPhrase;
+                    var result = await this.users.UpdateAsync(user);
+
+                    if (result.Succeeded)
+                    {
+                        return this.RedirectToAction("LoginPassphrase", new { passphraseReset = true });
+                    }
+                }
+                else
+                {
+                    return this.RedirectToAction("LoginFail");
+                }
+            }
+
+            return this.RedirectToAction("LoginFail");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
