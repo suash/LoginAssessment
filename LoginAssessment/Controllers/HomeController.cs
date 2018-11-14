@@ -62,7 +62,7 @@ namespace LoginAssessment.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return this.View();
+            return this.View(new RegisterErrorViewModel());
         }
 
         [HttpGet]
@@ -152,7 +152,7 @@ namespace LoginAssessment.Controllers
 
                 if (result.Succeeded)
                 {
-                    this.RedirectToAction("Login", new { registered = true });
+                    return this.RedirectToAction("Login", new { registered = true });
                 }
 
                 var message = string.Empty;
@@ -162,7 +162,7 @@ namespace LoginAssessment.Controllers
                     message += identityError.Description + Environment.NewLine;
                 }
 
-                return this.BadRequest(message);
+                return this.View("Register", new RegisterErrorViewModel { ErrorMessage = message });
             }
 
             return this.BadRequest("Required fields not set");

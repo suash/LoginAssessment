@@ -1,0 +1,16 @@
+server {
+    gzip on;
+    gzip_types gzip_types    text/plain application/javascript application/x-javascript text/javascript text/xml text/css application/json;
+    listen 80;
+    listen [::]:80;
+    
+    server_name www.loginassessment18.co.za;
+    
+    location / {
+        gzip_static on;
+        include /etc/nginx/proxy_params;
+        proxy_pass http://localhost:5008/;
+        fastcgi_buffers 16 16k;
+        fastcgi_buffer_size 32k;
+    }
+}
