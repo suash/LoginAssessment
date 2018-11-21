@@ -704,6 +704,7 @@ table.no-margin .progress {
     float: none !important
 }
 
+/*
 .col-md-55,
 .col-xs-1,
 .col-sm-1,
@@ -759,7 +760,7 @@ table.no-margin .progress {
     padding-right: 10px;
     padding-left: 10px
 }
-
+*/
 .row {
     margin-right: -10px;
     margin-left: -10px
@@ -2638,7 +2639,8 @@ legend {
 }
 
 .form-group {
-    margin-bottom: 10px
+    margin-left: 0px !important;
+    margin-right: 0px !important;
 }
 
 .validate {
@@ -5039,3 +5041,12 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
     background-color: #ffff !important;
 }
 /** /bootstrap-datetimepicker **/
+
+
+input.ng-dirty.ng-invalid {
+    border: 1px solid red;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0px !important;
+}

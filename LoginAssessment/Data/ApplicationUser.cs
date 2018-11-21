@@ -1,6 +1,8 @@
 namespace LoginAssessment.Data
 {
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+
     using Microsoft.AspNetCore.Identity;
 
     public class ApplicationUser : IdentityUser
@@ -14,6 +16,9 @@ namespace LoginAssessment.Data
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+
+        [MaxLength(255)]
+        public string Password { get; set; }
 
         public string PassPhrase { get; set; }
 

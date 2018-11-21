@@ -24,7 +24,7 @@
                                 <input type="number" min="18" ng-model="age" ng-change="validateStep1()" step="1" class="form-control" name="age" placeholder="Age" required>
                             </div>
                             <div class="row form-group">
-                                <select class="form-control" ng-model="gender" ng-change="validateStep1()" name="gender" style="text-align: center; text-align-last: center;">
+                                <select class="form-control" ng-model="gender" ng-change="validateStep1()" name="gender" style="text-align: center; text-align-last: center;" required>
                                     <option selected="selected" disabled="disabled" value=""> --- Gender --- </option>
                                     <option value="Female">Female</option>
                                     <option value="Male">Male</option>
@@ -75,6 +75,9 @@
                             <div class="row form-group">
                                 <input type="password" ng-model="password" ng-change="password1Change()" class="form-control" name="password" id="password" placeholder="Password" required>
                             </div>
+                            <div class="row form-group no-margin-bottom">
+                                <uib-progressbar class="progress-striped active" value="complexity.value" type="{{complexity.type}}"><i>{{complexity.text}}</i></uib-progressbar>
+                            </div>
                             <div class="row form-group">
                                 <input type="password" ng-model="password2" ng-change="password2Change()" class="form-control" name="password2" id="password2" placeholder="Confirm Password" required>
                                 <div ng-if="passwordsNotMatching">
@@ -100,13 +103,13 @@
                                 </p>
                                 <ol>
                                     <li>Only lowercase letters</li>
-                                    <li>12 or more characters</li>
+                                    <li>16 or more characters</li>
                                 </ol>
                                 The stronger the passphrase gets the faster the rabbit will run
                                 <p></p>
                             </div>
                             <div class="form-group">
-                                <input type="password" ng-pattern="/^([a-z ]){12,256}$/" maxlength="256" class="form-control" name="passphrase" id="passphrase" placeholder="Enter Passphrase" ng-model="passphrase" pass-check="passwordStrength" required />
+                                <input type="password" ng-pattern="/^([a-z ]){16,256}$/" maxlength="256" class="form-control" name="passphrase" id="passphrase" placeholder="Enter Passphrase" ng-model="passphrase" ng-change="checkPassphraseMatch()" pass-check="passwordStrength" required />
                             </div>
                             <div class="form-group">
                                 <input type="password" maxlength="256" class="form-control" name="passphrase2" id="passphrase2" placeholder="Confirm Passphrase" ng-model="passphrase2" ng-change="checkPassphraseMatch()" required />
@@ -137,16 +140,19 @@
                         <h2>Create Account</h2>
                         <fieldset>
                             <h4>Complete</h4>
-                            <p>
+                            <p ng-if="canSubmit()">
                                 You have successfully completed all steps.
                                 <br>
                                 Please click register to continue
                                 <br>
                                 or go back and rectify any issues
                             </p>
+                            <div ng-if="!canSubmit()" class="alert alert-danger" role="alert" id="fail" style="text-shadow: none; color: #000">
+                                Please fix the errors on the previous steps before registering.
+                            </div>
                             <div class="clearfix"></div>
                             <button ng-click="goToStep3()" class="btn btn-default prev-step" type="button">Previous</button>
-                            <button type="submit" class="btn btn-default submit">Register</button>
+                            <button ng-disabled="!canSubmit()" type="submit" class="btn btn-default submit">Register</button>
                         </fieldset>
                     </uib-tab>
                 </uib-tabset>

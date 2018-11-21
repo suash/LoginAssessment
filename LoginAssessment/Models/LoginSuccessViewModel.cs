@@ -5,5 +5,7 @@
         public int LoginDeviceId { get; set; }
 
         public int LoginPreferenceId { get; set; }
+
+        public bool IsPreviousPasswordOrPassphraseUsed { get; set; }
     }
 }

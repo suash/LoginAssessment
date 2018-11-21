@@ -14,6 +14,11 @@ namespace LoginAssessment.Data
 
         public int LoginDeviceId { get; set; }
 
+        [MaxLength(5000)]
+        public string Comments { get; set; }
+
+        public bool? IsPreviousPasswordOrPassphraseUsed { get; set; }
+
         public DateTime LoginDateTime { get; set; }
 
         public LoginPreference LoginPreference { get; set; }

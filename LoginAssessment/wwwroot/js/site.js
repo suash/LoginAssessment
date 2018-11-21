@@ -73,6 +73,11 @@ app.controller('RegisterController', function ($scope, $window) {
     $scope.step3Disabled = true;
     $scope.step4Disabled = true;
     $scope.age = 18;
+    $scope.complexity = {
+        value: 0,
+        type: 'danger',
+        text: 'Weak'
+    };
 
     $scope.$on('passwordStrength:result', function (event, value) {
         $scope.strength = value;
@@ -83,12 +88,11 @@ app.controller('RegisterController', function ($scope, $window) {
     };
 
     $scope.canProceedToStep3 = function () {
-        return !$scope.step3Disabled;
+        return !$scope.step3Disabled && !$scope.step2Disabled;
     };
 
-
     $scope.canProceedToStep4 = function () {
-        return !$scope.step4Disabled;
+        return !$scope.step4Disabled && !$scope.step3Disabled && !$scope.step2Disabled;
     };
 
     $scope.validateStep1 = function () {
@@ -110,14 +114,22 @@ app.controller('RegisterController', function ($scope, $window) {
 
     $scope.validateStep3 = function() {
         var form = $scope.registerForm;
-        var isvalid = form.passphrase.$modelValue && form.passphrase.$modelValue.length >= 12 && !$scope.passphraseNotMatching;
+        var isvalid = form.passphrase.$modelValue && form.passphrase.$modelValue.length >= 16 && !$scope.passphraseNotMatching;
         $scope.step4Disabled = !isvalid;
     };
 
+    $scope.canSubmit = function () {
+        $scope.validateStep1();
+        $scope.validateStep2();
+        $scope.validateStep3();
+
+        return $scope.canProceedToStep2() && $scope.canProceedToStep3() && $scope.canProceedToStep4();
+    }
+
     $scope.function = function () {
-        $scope.active = 0;
+        $scope.active = 1;
     };
-    
+
     $scope.goToStep2 = function () {
         $scope.active = 1;
     };
@@ -148,23 +160,90 @@ app.controller('RegisterController', function ($scope, $window) {
         }
 
         $scope.validateStep2();
+
+        $scope.setComplexity();
+
+        $scope.password2Change();
     };
 
     $scope.password2Change = function () {
         var form = $scope.registerForm;
         $scope.passwordsNotMatching = form.password.$modelValue !== form.password2.$modelValue;
-
+        $scope.validateStep1();
         $scope.validateStep2();
     };
 
     $scope.checkPassphraseMatch = function() {
         var form = $scope.registerForm;
         $scope.passphraseNotMatching = form.passphrase.$modelValue && form.passphrase.$modelValue !== form.passphrase2.$modelValue;
+
+        $scope.validateStep1();
+        $scope.validateStep2();
         $scope.validateStep3();
+    };
+
+    $scope.setComplexity = function() {
+        var value = 0;
+        if ($scope.isValidLength) {
+            value = value + 20;
+        }
+
+        if ($scope.hasSpecialCharacter) {
+            value = value + 20;
+        }
+
+        if ($scope.hasDigit) {
+            value = value + 20;
+        }
+
+        if ($scope.hasLowercaseLetter) {
+            value = value + 20;
+        }
+
+        if ($scope.hasUppercaseLetter) {
+            value = value + 20;
+        }
+
+        $scope.complexity.value = value;
+
+        switch (value) {
+        case 0:
+            $scope.complexity.type = 'danger';
+            $scope.complexity.text = 'Very Weak';
+            break;
+        case 20:
+            $scope.complexity.type = 'danger';
+            $scope.complexity.text = 'Ver Weak';
+            break;
+        case 40:
+            $scope.complexity.type = 'danger';
+            $scope.complexity.text = 'Weak';
+            break;
+        case 60:
+            $scope.complexity.type = 'warning';
+            $scope.complexity.text = 'Weak';
+            break;
+        case 80:
+            $scope.complexity.type = 'info';
+            $scope.complexity.text = 'Strong';
+            break;
+        case 100:
+            $scope.complexity.type = 'success';
+            $scope.complexity.text = 'Very Strong';
+            break;
+        default:
+        }
+
+        console.log('Complexity: ' + JSON.stringify($scope.complexity));
     };
 });
 
 app.controller('PasswordResetController', function ($scope) {
+    $scope.complexity = {
+        value: 0,
+        type: 'danger',
+        text: 'Weak'
+    };
 
     $scope.password1Change = function () {
         var form = $scope.passwordResetForm;
@@ -184,6 +263,8 @@ app.controller('PasswordResetController', function ($scope) {
         }
 
         $scope.validateForm();
+
+        $scope.setComplexity();
     };
 
     $scope.validateForm = function() {
@@ -204,6 +285,61 @@ app.controller('PasswordResetController', function ($scope) {
         $scope.passwordsNotMatching = form.password.$modelValue !== form.password2.$modelValue;
 
         $scope.validateForm();
+    };
+
+    $scope.setComplexity = function () {
+        var value = 0;
+        if ($scope.isValidLength) {
+            value = value + 20;
+        }
+
+        if ($scope.hasSpecialCharacter) {
+            value = value + 20;
+        }
+
+        if ($scope.hasDigit) {
+            value = value + 20;
+        }
+
+        if ($scope.hasLowercaseLetter) {
+            value = value + 20;
+        }
+
+        if ($scope.hasUppercaseLetter) {
+            value = value + 20;
+        }
+
+        $scope.complexity.value = value;
+
+        switch (value) {
+        case 0:
+            $scope.complexity.type = 'danger';
+            $scope.complexity.text = 'Very Weak';
+            break;
+        case 20:
+            $scope.complexity.type = 'danger';
+            $scope.complexity.text = 'Very Weak';
+            break;
+        case 40:
+            $scope.complexity.type = 'danger';
+            $scope.complexity.text = 'Weak';
+            break;
+        case 60:
+            $scope.complexity.type = 'warning';
+            $scope.complexity.text = 'Weak';
+            break;
+        case 80:
+            $scope.complexity.type = 'info';
+            $scope.complexity.text = 'Strong';
+            break;
+        case 100:
+            $scope.complexity.type = 'success';
+            $scope.complexity.text = 'Very Strong';
+            break;
+        default:
+        }
+
+        console.log('Complexity: ' + JSON.stringify($scope.complexity));
     };
 
 });
