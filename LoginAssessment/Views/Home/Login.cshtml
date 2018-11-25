@@ -1,9 +1,4 @@
-﻿@{
-    <input type="hidden" value="@ViewBag.PasswordReset.ToString()" />
-    <input type="hidden" value="@ViewBag.Registered.ToString()" />
-}
-
-<div class="login_wrapper">
+﻿<div class="login_wrapper">
     <div class="animate form login_form">
         <section class="login_content">
             <form method="POST" action="~/Home/Login" id="login_pass" role="form" class="form-horizontal" name="loginForm">
@@ -11,7 +6,7 @@
                 @if (ViewBag.PasswordReset.ToString() == "True")
                 {
                     <div class="alert alert-success" role="alert" id="success" style="display: block; text-shadow: none; color: rgb(0, 0, 0);">
-                        Successfully Updated Password.<br>Login with your new password
+                        Successfully Updated Password/Passphrase.<br>Login with your new password/passphrase
                     </div>
                 }
                 @if (ViewBag.Registered.ToString() == "True")
@@ -21,6 +16,21 @@
                     </div>
                 }
 
+                @if (ViewBag.UserNotFound.ToString() == "True")
+                {
+                    <div class="alert alert-danger" role="alert" id="success" style="display: block; text-shadow: none; color: white;">
+                        <span>Email address not found.</span><br><span>Please click <a href="/Home/Register" style="color: blue">here</a>to create an account.</span>
+                    </div>
+                }
+                @if (!string.IsNullOrWhiteSpace(ViewBag.Email))
+                {
+                    <div class="alert alert-danger" role="alert" id="success" style="display: block; text-shadow: none; color: white;">
+                        <span>Incorrect password</span>
+                        <br>
+                        <span>Please click <a href="/Home/Login" style="color: blue">here</a>to try again.</span>
+                        <span>Or <a href="@string.Format("/Home/LoginPassphrase?emailAddress={0}", ViewBag.Email)" style="color: blue">Continue</a>to the login with passphrase screen.</span>
+                    </div>
+                }
                 <div class="row">
                     <div class="form-group">
                         <input type="email" name="email" class="form-control" placeholder="Email" required>

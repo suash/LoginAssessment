@@ -1,7 +1,7 @@
-﻿<div class="login_wrapper">
+﻿<div class="login_wrapper" ng-controller="DummyController">
     <div class="animate form login_form">
         <section class="login_content">
-            <form method="POST" action="~/Home/LoginPassphrase" id="login_phrase">
+            <form method="POST" action="~/Home/LoginPassphrase" id="login_phrase" name="passPhrase">
                 <h1>Passphrase</h1>
                 @if (ViewBag.PassphraseReset.ToString() == "True")
                 {
@@ -11,17 +11,24 @@
                 }
                 else
                 {
-                    <div class="alert alert-success" role="alert" id="fail" style="text-shadow: none; color: #000">
-                        <h5>Username and Password Correct</h5>
-                        You have successfully entered your username and password. Please enter passphrase below to finish login.
-                    </div>
+                    if (string.IsNullOrWhiteSpace(ViewBag.Email))
+                    {
+                        <div class="alert alert-success" role="alert" id="fail" style="text-shadow: none; color: #000">
+                            <h5>Username and Password Correct</h5>
+                            You have successfully entered your username and password. Please enter passphrase below to finish login.
+                        </div>
+                    }
+                }
+                @if (!string.IsNullOrWhiteSpace(ViewBag.Email))
+                {
+                    <input type="hidden" name="Email" value="@ViewBag.Email" />
                 }
                 <div>
-                    <input type="password" name="Passphrase" class="form-control" placeholder="Passphrase" required>
+                    <input placeholder="16+ lower case characters only" type="password" name="Passphrase" class="form-control" placeholder="Passphrase" ng-pattern="/^([a-z ]){16,256}$/" ng-model="passphrase" required>
                 </div>
                 <br />
                 <div>
-                    <button type="submit" class="btn btn-default submit">Log in</button>
+                    <button ng-disabled="!passPhrase.$valid" type="submit" class="btn btn-default submit">Log in</button>
                 </div>
 
                 <div class="clearfix"></div>

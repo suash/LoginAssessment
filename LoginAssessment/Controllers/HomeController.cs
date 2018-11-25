@@ -32,30 +32,35 @@ namespace LoginAssessment.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login(bool? passwordReset = false, bool? registered = false)
+        public IActionResult Login(bool? passwordReset = false, bool? registered = false, bool? userNotFound = false, string emailAddress = null)
         {
             this.ViewBag.PasswordReset = passwordReset;
             this.ViewBag.Registered = registered;
+            this.ViewBag.UserNotFound = userNotFound;
+            this.ViewBag.Email = emailAddress;
 
             return this.View();
         }
 
         [HttpGet]
-        public IActionResult LoginPassphrase(bool? passphraseReset = false)
+        public IActionResult LoginPassphrase(bool? passphraseReset = false, string emailAddress = null)
         {
             this.ViewBag.PassphraseReset = passphraseReset;
+            this.ViewBag.Email = emailAddress;
             return this.View();
         }
 
         [HttpGet]
-        public IActionResult PasswordReset()
+        public IActionResult PasswordReset(bool? userNotFound = false)
         {
+            this.ViewBag.UserNotFound = userNotFound;
             return this.View();
         }
 
         [HttpGet]
-        public IActionResult PassphraseReset()
+        public IActionResult PassphraseReset(bool? userNotFound = false)
         {
+            this.ViewBag.UserNotFound = userNotFound;
             return this.View();
         }
 
@@ -101,12 +106,16 @@ namespace LoginAssessment.Controllers
                         };
 
                         await this.signInManager.SignInAsync(user, authenticationProperties);
-                        return this.RedirectToAction("LoginPassphrase");
+                        return this.RedirectToAction("LoginPassphrase", new { emailAddress = model.Email });
+                    }
+                    else
+                    {
+                        return this.RedirectToAction("Login", new { emailAddress = model.Email });
                     }
                 }
                 else
                 {
-                    return this.RedirectToAction("LoginFail");
+                    return this.RedirectToAction("Login", new { userNotFound = true });
                 }
             }
 
@@ -118,14 +127,41 @@ namespace LoginAssessment.Controllers
         {
             if (this.ModelState.IsValid)
             {
-                var user = await this.users.FindByNameAsync(this.User.Identity.Name);
+                var email = string.Empty;
+                if (this.User.Identity.IsAuthenticated)
+                {
+                    email = this.User.Identity.Name;
+                }
+                else
+                {
+                    email = model.Email;
+                }
+
+                var user = await this.users.FindByNameAsync(email);
                 if (user != null)
                 {
+                    var authenticationProperties = new AuthenticationProperties
+                    {
+                        RedirectUri = "~/Home/LoginPassphrase",
+                        IsPersistent = true,
+                        ExpiresUtc = DateTimeOffset.UtcNow.Add(TimeSpan.FromMinutes(30))
+                    };
+
+                    await this.signInManager.SignInAsync(user, authenticationProperties);
+
                     var passPhraseMatch = user.PassPhrase.Equals(model.PassPhrase, StringComparison.Ordinal);
                     if (passPhraseMatch)
                     {
                         return this.RedirectToAction("LoginSuccess");
                     }
+                    else
+                    {
+                        return this.RedirectToAction("LoginFail");
+                    }
+                }
+                else
+                {
+                    return this.RedirectToAction("Login");
                 }
             }
 
@@ -145,7 +181,8 @@ namespace LoginAssessment.Controllers
                     NormalizedUserName = model.Email,
                     UserName = model.Email,
                     Gender = model.Gender,
-                    PassPhrase = model.PassPhrase
+                    PassPhrase = model.PassPhrase,
+                    Password = model.Password
                 };
 
                 var result = await this.users.CreateAsync(user, model.Password);
@@ -179,7 +216,9 @@ namespace LoginAssessment.Controllers
                     {
                         LoginDeviceId = model.LoginDeviceId,
                         LoginPreferenceId = model.LoginPreferenceId,
-                        LoginDateTime = DateTime.Now
+                        LoginDateTime = DateTime.Now,
+                        IsPreviousPasswordOrPassphraseUsed = model.IsPreviousPasswordOrPassphraseUsed,
+                        Comments = model.Comments
                     });
 
                 var result = await this.users.UpdateAsync(user);
@@ -211,7 +250,9 @@ namespace LoginAssessment.Controllers
                     LoginDeviceId = model.LoginDeviceId,
                     LoginPreferenceId = model.LoginPreferenceId,
                     LoginReasonId = model.LoginReasonId,
-                    LoginDateTime = DateTime.Now
+                    LoginDateTime = DateTime.Now,
+                    IsPreviousPasswordOrPassphraseUsed = model.IsPreviousPasswordOrPassphraseUsed,
+                    Comments = model.Comments
                 });
 
             var result = await this.users.UpdateAsync(user);
@@ -232,7 +273,40 @@ namespace LoginAssessment.Controllers
                 if (user != null)
                 {
                     string resetToken = await this.users.GeneratePasswordResetTokenAsync(user);
+                    user.Password = model.Password;
                     var result = await this.users.ResetPasswordAsync(user, resetToken, model.Password);
+                    if (result.Succeeded)
+                    {
+                        result = await this.users.UpdateAsync(user);
+                        if (result.Succeeded)
+                        {
+                            return this.RedirectToAction("Login", new { passwordReset = true });
+                        }
+                    }
+                    else
+                    {
+                        return this.RedirectToAction("PasswordReset");
+                    }
+                }
+                else
+                {
+                    return this.RedirectToAction("Login", new { userNotFound = true });
+                }
+            }
+
+            return this.RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PassphraseReset(LoginPassphraseViewModel model)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var user = await this.users.FindByNameAsync(model.Email);
+                if (user != null)
+                {
+                    user.PassPhrase = model.PassPhrase;
+                    var result = await this.users.UpdateAsync(user);
 
                     if (result.Succeeded)
                     {
@@ -241,32 +315,7 @@ namespace LoginAssessment.Controllers
                 }
                 else
                 {
-                    return this.RedirectToAction("LoginFail");
-                }
-            }
-
-            return this.RedirectToAction("LoginFail");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> PassphraseReset(LoginPassphraseViewModel model)
-        {
-            if (this.ModelState.IsValid)
-            {
-                var user = await this.users.FindByNameAsync(this.User.Identity.Name);
-                if (user != null)
-                {
-                    user.PassPhrase = model.PassPhrase;
-                    var result = await this.users.UpdateAsync(user);
-
-                    if (result.Succeeded)
-                    {
-                        return this.RedirectToAction("LoginPassphrase", new { passphraseReset = true });
-                    }
-                }
-                else
-                {
-                    return this.RedirectToAction("LoginFail");
+                    return this.RedirectToAction("PassphraseReset", new { userNotFound = true });
                 }
             }
 

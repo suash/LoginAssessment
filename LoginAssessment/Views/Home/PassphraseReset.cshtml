@@ -3,19 +3,30 @@
         <section class="login_content">
             <form method="POST" name="passphraseResetForm" id="login_pass" action="~/Home/PassphraseReset">
                 <h1>Forgot Passphrase</h1>
+                @if (ViewBag.UserNotFound.ToString() == "True")
+                {
+                    <div class="alert alert-danger" role="alert" id="success" style="display: block; text-shadow: none; color: white;">
+                        <span>Email address not found.</span><br>
+                        <span>Please click <a href="/Home/PassPhraseReset" style="color: blue">here</a>to try again.</span>
+                        <span>Or <a href="/Home/Register" style="color: blue">Register</a>to create an account.</span>
+                    </div>
+                }
                 <fieldset>
                     <div style="text-align: left; color: darkred;">
                         <p>
                             Please create a passphrase that meets the following criteria
                         </p><ol>
                             <li>Only lowercase letters</li>
-                            <li>12 or more characters</li>
+                            <li>16 or more characters</li>
                         </ol>
                         The stronger the passphrase gets the faster the rabbit will run
                         <p></p>
                     </div>
+                    <div class="row form-group">
+                        <input type="email" ng-model="email" class="form-control" name="email" id="email" placeholder="Email" required>
+                    </div>
                     <div class="form-group">
-                        <input type="password" ng-pattern="/^([a-z ]){12,256}$/" maxlength="256" class="form-control" name="passphrase" id="passphrase" placeholder="Enter Passphrase" ng-model="passphrase" pass-check="passwordStrength" required />
+                        <input type="password" ng-pattern="/^([a-z ]){16,256}$/" maxlength="256" class="form-control" name="passphrase" id="passphrase" placeholder="Enter Passphrase" ng-model="passphrase" ng-change="checkPassphraseMatch()" pass-check="passwordStrength" required />
                     </div>
                     <div class="form-group">
                         <input type="password" maxlength="256" class="form-control" name="passphrase2" id="passphrase2" placeholder="Confirm Passphrase" ng-model="passphrase2" ng-change="checkPassphraseMatch()" required />
@@ -35,7 +46,7 @@
                     </div>
                     <div class="clearfix"></div>
                     <br />
-                    <button ng-disabled="formInValid" class="btn btn-default submit" type="submit">Submit</button>
+                    <button ng-disabled="!passphraseResetForm.$valid || passphraseNotMatching" class="btn btn-default submit" type="submit">Submit</button>
                 </fieldset>
                 <div class="clearfix"></div>
 

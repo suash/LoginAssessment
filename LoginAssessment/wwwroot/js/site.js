@@ -245,6 +245,8 @@ app.controller('PasswordResetController', function ($scope) {
         text: 'Weak'
     };
 
+    $scope.formInValid = true;
+
     $scope.password1Change = function () {
         var form = $scope.passwordResetForm;
         if (form.password.$modelValue) {
@@ -262,9 +264,8 @@ app.controller('PasswordResetController', function ($scope) {
             $scope.hasUppercaseLetter = false;
         }
 
-        $scope.validateForm();
-
         $scope.setComplexity();
+        $scope.password2Change();
     };
 
     $scope.validateForm = function() {
@@ -282,7 +283,11 @@ app.controller('PasswordResetController', function ($scope) {
 
     $scope.password2Change = function () {
         var form = $scope.passwordResetForm;
-        $scope.passwordsNotMatching = form.password.$modelValue !== form.password2.$modelValue;
+        if (!form.password.$modelValue || !form.password2.$modelValue) {
+            $scope.passwordsNotMatching = true;
+        } else {
+            $scope.passwordsNotMatching = form.password.$modelValue !== form.password2.$modelValue;
+        }
 
         $scope.validateForm();
     };
@@ -341,7 +346,6 @@ app.controller('PasswordResetController', function ($scope) {
 
         console.log('Complexity: ' + JSON.stringify($scope.complexity));
     };
-
 });
 
 app.controller('PassphraseResetController', function($scope) {
@@ -352,13 +356,17 @@ app.controller('PassphraseResetController', function($scope) {
 
     $scope.checkPassphraseMatch = function () {
         var form = $scope.passphraseResetForm;
-        $scope.passphraseNotMatching = form.passphrase.$modelValue && form.passphrase.$modelValue !== form.passphrase2.$modelValue;
+        $scope.passphraseNotMatching = form.passphrase.$modelValue && (form.passphrase.$modelValue !== form.passphrase2.$modelValue);
         $scope.validateForm();
     };
 
     $scope.validateForm = function () {
         var form = $scope.passphraseResetForm;
-        var isvalid = form.passphrase.$modelValue && form.passphrase.$modelValue.length >= 12 && !$scope.passphraseNotMatching;
+        var isvalid = form.passphrase.$modelValue && (form.passphrase.$modelValue.length >= 16 && !$scope.passphraseNotMatching);
         $scope.formInValid = !isvalid;
     };
+});
+
+app.controller('DummyController', function() {
+
 });

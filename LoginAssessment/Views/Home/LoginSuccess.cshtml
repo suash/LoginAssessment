@@ -6,17 +6,28 @@
                 <p> You have Successfully Logged In </p>
 
                 <div style="margin: 0 0 20px">
-                    <h3 style="font-size: 14px; font-weight: bold">What device was used to login?</h3>
+                    <h3 class="required" style="font-size: 14px; font-weight: bold">Did you use a previously used password/passphrase?</h3>
+                    <label class="radio-inline"><input type="radio" name="IsPreviousPasswordOrPassphraseUsed" value="true" required>Yes</label>
+                    <label class="radio-inline"><input type="radio" name="IsPreviousPasswordOrPassphraseUsed" value="false" required>No</label>
+                </div>
+
+                <div style="margin: 0 0 20px">
+                    <h3 class="required" style="font-size: 14px; font-weight: bold">What device was used to login?</h3>
                     <label class="radio-inline"><input type="radio" name="LoginDeviceId" value="1" required>Phone</label>
                     <label class="radio-inline"><input type="radio" name="LoginDeviceId" value="2" required>Tablet</label>
                     <label class="radio-inline"><input type="radio" name="LoginDeviceId" value="3" required>Computer</label>
                 </div>
 
                 <div style="margin: 0 0 20px">
-                    <h3 style="font-size: 14px; font-weight: bold">What type of password did you prefer using?</h3>
+                    <h3 class="required" style="font-size: 14px; font-weight: bold">What type of password did you prefer using?</h3>
                     <label class="radio-inline"><input type="radio" name="LoginPreferenceId" value="1" required>Password</label>
                     <label class="radio-inline"><input type="radio" name="LoginPreferenceId" value="2" required>Passphrase</label>
                     <label class="radio-inline"><input type="radio" name="LoginPreferenceId" value="3" required>No Preference</label>
+                </div>
+
+                <div style="margin: 0 0 20px">
+                    <h3 style="font-size: 14px; font-weight: bold">Other comments (optional)</h3>
+                    <textarea name="Comments" maxlength="5000" rows="4" style="width: 100%"></textarea>
                 </div>
 
                 <div>

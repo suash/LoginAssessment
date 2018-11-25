@@ -7,5 +7,7 @@
         public int LoginPreferenceId { get; set; }
 
         public bool IsPreviousPasswordOrPassphraseUsed { get; set; }
+
+        public string Comments { get; set; }
     }
 }
