@@ -17,7 +17,11 @@ namespace LoginAssessment.Data
         [MaxLength(5000)]
         public string Comments { get; set; }
 
-        public bool? IsPreviousPasswordOrPassphraseUsed { get; set; }
+        public bool IsPreviousPasswordUsed { get; set; }
+
+        public bool IsPreviousPassphraseUsed { get; set; }
+
+        public bool IsPreviousPasswordAndPassphraseUsed { get; set; }
 
         public DateTime LoginDateTime { get; set; }
 

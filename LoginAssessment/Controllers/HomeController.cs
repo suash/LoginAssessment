@@ -77,14 +77,25 @@ namespace LoginAssessment.Controllers
         }
 
         [HttpGet]
-        public IActionResult LoginFail()
+        public IActionResult LoginFail(string emailAddress = null)
         {
+            this.ViewBag.Email = emailAddress;
             return this.View();
         }
 
         [HttpGet]
-        public IActionResult ThankYou()
+        public IActionResult LoginFailPassphrase(string emailAddress = null)
         {
+            this.ViewBag.Email = emailAddress;
+            return this.View();
+        }
+
+        [HttpGet]
+        public IActionResult ThankYou(string emailAddress = null, bool? passwordFailComplete = false, bool? passphraseFailComplete = false)
+        {
+            this.ViewBag.Email = emailAddress;
+            this.ViewBag.PasswordFailComplete = passwordFailComplete;
+            this.ViewBag.passphraseFailComplete = passphraseFailComplete;
             return this.View();
         }
 
@@ -110,7 +121,7 @@ namespace LoginAssessment.Controllers
                     }
                     else
                     {
-                        return this.RedirectToAction("Login", new { emailAddress = model.Email });
+                        return this.RedirectToAction("LoginFail", new { emailAddress = model.Email });
                     }
                 }
                 else
@@ -156,7 +167,7 @@ namespace LoginAssessment.Controllers
                     }
                     else
                     {
-                        return this.RedirectToAction("LoginFail");
+                        return this.RedirectToAction("LoginFailPassphrase", new { emailAddress = model.Email });
                     }
                 }
                 else
@@ -217,7 +228,9 @@ namespace LoginAssessment.Controllers
                         LoginDeviceId = model.LoginDeviceId,
                         LoginPreferenceId = model.LoginPreferenceId,
                         LoginDateTime = DateTime.Now,
-                        IsPreviousPasswordOrPassphraseUsed = model.IsPreviousPasswordOrPassphraseUsed,
+                        IsPreviousPasswordUsed = model.IsPreviousPasswordUsed,
+                        IsPreviousPassphraseUsed = model.IsPreviousPassphraseUsed,
+                        IsPreviousPasswordAndPassphraseUsed = model.IsPreviousPasswordAndPassphraseUsed,
                         Comments = model.Comments
                     });
 
@@ -251,14 +264,51 @@ namespace LoginAssessment.Controllers
                     LoginPreferenceId = model.LoginPreferenceId,
                     LoginReasonId = model.LoginReasonId,
                     LoginDateTime = DateTime.Now,
-                    IsPreviousPasswordOrPassphraseUsed = model.IsPreviousPasswordOrPassphraseUsed,
+                    IsPreviousPasswordUsed = model.IsPreviousPasswordUsed,
+                    IsPreviousPassphraseUsed = model.IsPreviousPassphraseUsed,
+                    IsPreviousPasswordAndPassphraseUsed = model.IsPreviousPasswordAndPassphraseUsed,
                     Comments = model.Comments
                 });
 
             var result = await this.users.UpdateAsync(user);
             if (result.Succeeded)
             {
-                return this.RedirectToAction("ThankYou");
+                return this.RedirectToAction("ThankYou", new { emailAddress = model.Email, passwordFailComplete = true });
+            }
+
+            return this.RedirectToAction("Login");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LoginFailPassphrase(LoginFailViewModel model)
+        {
+            ApplicationUser user;
+            if (this.User.Identity.IsAuthenticated)
+            {
+                user = await this.users.FindByEmailAsync(this.User.Identity.Name);
+            }
+            else
+            {
+                user = await this.users.FindByEmailAsync(Startup.AnonymousUserEmail);
+            }
+
+            user.FailedLogins.Add(
+                new LoginFail
+                {
+                    LoginDeviceId = model.LoginDeviceId,
+                    LoginPreferenceId = model.LoginPreferenceId,
+                    LoginReasonId = model.LoginReasonId,
+                    LoginDateTime = DateTime.Now,
+                    IsPreviousPasswordUsed = model.IsPreviousPasswordUsed,
+                    IsPreviousPassphraseUsed = model.IsPreviousPassphraseUsed,
+                    IsPreviousPasswordAndPassphraseUsed = model.IsPreviousPasswordAndPassphraseUsed,
+                    Comments = model.Comments
+                });
+
+            var result = await this.users.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return this.RedirectToAction("ThankYou", new { emailAddress = model.Email, passphraseFailComplete = true });
             }
 
             return this.RedirectToAction("Login");

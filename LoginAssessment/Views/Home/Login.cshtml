@@ -19,7 +19,8 @@
                 @if (ViewBag.UserNotFound.ToString() == "True")
                 {
                     <div class="alert alert-danger" role="alert" id="success" style="display: block; text-shadow: none; color: white;">
-                        <span>Email address not found.</span><br><span>Please click <a href="/Home/Register" style="color: blue">here</a>to create an account.</span>
+                        <span>Email address not found.</span><br>
+                        <span>Please click&nbsp;<a href="/Home/Register" style="color: blue">here</a>to create an account.</span>
                     </div>
                 }
                 @if (!string.IsNullOrWhiteSpace(ViewBag.Email))
@@ -27,8 +28,8 @@
                     <div class="alert alert-danger" role="alert" id="success" style="display: block; text-shadow: none; color: white;">
                         <span>Incorrect password</span>
                         <br>
-                        <span>Please click <a href="/Home/Login" style="color: blue">here</a>to try again.</span>
-                        <span>Or <a href="@string.Format("/Home/LoginPassphrase?emailAddress={0}", ViewBag.Email)" style="color: blue">Continue</a>to the login with passphrase screen.</span>
+                        <span>Please click&nbsp;<a href="/Home/Login" style="color: blue">here</a>to try again.</span>
+                        <span>or&nbsp;<a href="@string.Format("/Home/LoginPassphrase?emailAddress={0}", ViewBag.Email)" style="color: blue">continue</a>&nbsp;the login with passphrase screen.</span>
                     </div>
                 }
                 <div class="row">

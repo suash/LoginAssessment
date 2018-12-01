@@ -1,14 +1,14 @@
 ﻿<div class="login_wrapper" ng-controller="DummyController">
     <div class="animate form login_form">
         <section class="login_content">
-            <form method="POST" id="failed_login" action="~/Home/LoginFail" name="failForm">
+            <form method="POST" id="failed_login" action="~/Home/LoginFailPassphrase" name="failForm">
                 <input type="hidden" name="Email" value="@ViewBag.Email" />
                 <h1>Failed Login</h1>
                 <p><strong>You entered your password or passphrase incorrectly at least once. Please complete a short survey so we can understand why.</strong></p>
                 <div style="margin: 0 0 20px">
                     <h3 class="required" style="font-size: 14px; font-weight: bold">Did you use a previously used password/passphrase?</h3>
-                    <label class="radio-inline"><input type="checkbox" name="IsPreviousPasswordUsed" value="false">I have previously use the password</label>
-                    <label class="radio-inline"><input type="checkbox" name="IsPreviousPassphraseUsed" value="false">I have previously use the passphrase</label>
+                    <label class="radio-inline"><input type="checkbox" name="IsPreviousPasswordUsed" value="true">I have previously use the password</label>
+                    <label class="radio-inline"><input type="checkbox" name="IsPreviousPassphraseUsed" value="true">I have previously use the passphrase</label>
                 </div>
                 <div style="margin: 0 0 20px;">
                     <h3 class="required" style="font-size: 14px; font-weight: bold">Was this login failure due to a memory or typing error?</h3>
