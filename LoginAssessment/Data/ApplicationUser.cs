@@ -11,6 +11,9 @@ namespace LoginAssessment.Data
         {
             this.SuccessfulLogins = new List<LoginSuccess>();
             this.FailedLogins = new List<LoginFail>();
+            this.PassphraseChanges = new List<PassphraseChange>();
+            this.PasswordChanges = new List<PasswordChange>();
+            this.LoginEntries = new List<LoginEntry>();
         }
 
         public string FirstName { get; set; }
@@ -29,5 +32,11 @@ namespace LoginAssessment.Data
         public List<LoginSuccess> SuccessfulLogins { get; set; }
 
         public List<LoginFail> FailedLogins { get; set; }
+
+        public List<LoginEntry> LoginEntries { get; set; }
+
+        public List<PasswordChange> PasswordChanges { get; set; }
+
+        public List<PassphraseChange> PassphraseChanges { get; set; }
     }
 }

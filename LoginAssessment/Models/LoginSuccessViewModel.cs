@@ -21,5 +21,7 @@
         public string Comments { get; set; }
 
         public string Email { get; set; }
+
+        public int LoginTypeId { get; set; }
     }
 }

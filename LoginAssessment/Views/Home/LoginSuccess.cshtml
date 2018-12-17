@@ -4,7 +4,7 @@
             <form method="POST" id="success_login" action="~/Home/LoginSuccess">
                 <h1>Logged In</h1>
                 <p> You have Successfully Logged In </p>
-
+                <input type="hidden" name="LoginTypeId" value="@ViewBag.LoginTypeId" />
                 <div style="margin: 0 0 20px">
                     <h3 class="required" style="font-size: 14px; font-weight: bold">Did you use a previously used password/passphrase?</h3>
                     <label class="radio-inline"><input type="checkbox" name="IsPreviousPasswordUsed" value="true">I have previously use the password</label>

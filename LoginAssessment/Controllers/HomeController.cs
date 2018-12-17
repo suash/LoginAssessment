@@ -1,16 +1,15 @@
-﻿using System.Diagnostics;
-using LoginAssessment.Models;
-using Microsoft.AspNetCore.Mvc;
-
-namespace LoginAssessment.Controllers
+﻿namespace LoginAssessment.Controllers
 {
     using System;
+    using System.Diagnostics;
     using System.Threading.Tasks;
 
     using LoginAssessment.Data;
+    using LoginAssessment.Models;
 
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Mvc;
 
     public class HomeController : Controller
     {
@@ -71,8 +70,9 @@ namespace LoginAssessment.Controllers
         }
 
         [HttpGet]
-        public IActionResult LoginSuccess()
+        public IActionResult LoginSuccess(int loginTypeId = 1)
         {
+            this.ViewBag.LoginTypeId = loginTypeId;
             return this.View();
         }
 
@@ -117,10 +117,31 @@ namespace LoginAssessment.Controllers
                         };
 
                         await this.signInManager.SignInAsync(user, authenticationProperties);
+
+                        user.LoginEntries.Add(new LoginEntry
+                        {
+                            LoginDateTime = DateTime.Now,
+                            LoginTypeId = (int)LoginTypeEnum.Password,
+                            IsSuccessful = true,
+                            UserId = user.Id
+                        });
+
+                        await this.users.UpdateAsync(user);
+
                         return this.RedirectToAction("LoginPassphrase", new { emailAddress = model.Email });
                     }
                     else
                     {
+                        user.LoginEntries.Add(new LoginEntry
+                        {
+                            LoginDateTime = DateTime.Now,
+                            LoginTypeId = (int)LoginTypeEnum.Password,
+                            IsSuccessful = false,
+                            UserId = user.Id
+                        });
+
+                        await this.users.UpdateAsync(user);
+
                         return this.RedirectToAction("LoginFail", new { emailAddress = model.Email });
                     }
                 }
@@ -163,10 +184,30 @@ namespace LoginAssessment.Controllers
                     var passPhraseMatch = user.PassPhrase.Equals(model.PassPhrase, StringComparison.Ordinal);
                     if (passPhraseMatch)
                     {
-                        return this.RedirectToAction("LoginSuccess");
+                        user.LoginEntries.Add(new LoginEntry
+                        {
+                            LoginDateTime = DateTime.Now,
+                            LoginTypeId = (int)LoginTypeEnum.Passphrase,
+                            IsSuccessful = true,
+                            UserId = user.Id
+                        });
+
+                        await this.users.UpdateAsync(user);
+
+                        return this.RedirectToAction("LoginSuccess", new { loginTypeId = (int)LoginTypeEnum.Passphrase });
                     }
                     else
                     {
+                        user.LoginEntries.Add(new LoginEntry
+                        {
+                            LoginDateTime = DateTime.Now,
+                            LoginTypeId = (int)LoginTypeEnum.Passphrase,
+                            IsSuccessful = false,
+                            UserId = user.Id
+                        });
+
+                        await this.users.UpdateAsync(user);
+
                         return this.RedirectToAction("LoginFailPassphrase", new { emailAddress = model.Email });
                     }
                 }
@@ -231,7 +272,8 @@ namespace LoginAssessment.Controllers
                         IsPreviousPasswordUsed = model.IsPreviousPasswordUsed,
                         IsPreviousPassphraseUsed = model.IsPreviousPassphraseUsed,
                         IsPreviousPasswordAndPassphraseUsed = model.IsPreviousPasswordAndPassphraseUsed,
-                        Comments = model.Comments
+                        Comments = model.Comments,
+                        LoginTypeId = model.LoginTypeId
                     });
 
                 var result = await this.users.UpdateAsync(user);
@@ -267,6 +309,7 @@ namespace LoginAssessment.Controllers
                     IsPreviousPasswordUsed = model.IsPreviousPasswordUsed,
                     IsPreviousPassphraseUsed = model.IsPreviousPassphraseUsed,
                     IsPreviousPasswordAndPassphraseUsed = model.IsPreviousPasswordAndPassphraseUsed,
+                    LoginTypeId = (int)LoginTypeEnum.Password,
                     Comments = model.Comments
                 });
 
@@ -302,6 +345,7 @@ namespace LoginAssessment.Controllers
                     IsPreviousPasswordUsed = model.IsPreviousPasswordUsed,
                     IsPreviousPassphraseUsed = model.IsPreviousPassphraseUsed,
                     IsPreviousPasswordAndPassphraseUsed = model.IsPreviousPasswordAndPassphraseUsed,
+                    LoginTypeId = (int)LoginTypeEnum.Passphrase,
                     Comments = model.Comments
                 });
 
@@ -322,11 +366,20 @@ namespace LoginAssessment.Controllers
                 var user = await this.users.FindByNameAsync(model.Email);
                 if (user != null)
                 {
+                    var previousPassword = user.Password;
                     string resetToken = await this.users.GeneratePasswordResetTokenAsync(user);
                     user.Password = model.Password;
                     var result = await this.users.ResetPasswordAsync(user, resetToken, model.Password);
                     if (result.Succeeded)
                     {
+                        user.PasswordChanges.Add(new PasswordChange
+                        {
+                            PasswordBefore = previousPassword,
+                            PasswordAfter = model.Password,
+                            PasswordChangedDateTime = DateTime.Now,
+                            UserId = user.Id
+                        });
+
                         result = await this.users.UpdateAsync(user);
                         if (result.Succeeded)
                         {
@@ -355,7 +408,17 @@ namespace LoginAssessment.Controllers
                 var user = await this.users.FindByNameAsync(model.Email);
                 if (user != null)
                 {
+                    var previousPassphrase = user.PassPhrase;
                     user.PassPhrase = model.PassPhrase;
+
+                    user.PassphraseChanges.Add(new PassphraseChange
+                    {
+                        PassphraseBefore = previousPassphrase,
+                        PassphraseAfter = model.PassPhrase,
+                        PassphraseChangedDateTime = DateTime.Now,
+                        UserId = user.Id
+                    });
+
                     var result = await this.users.UpdateAsync(user);
 
                     if (result.Succeeded)

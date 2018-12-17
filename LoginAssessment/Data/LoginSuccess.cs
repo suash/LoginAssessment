@@ -23,6 +23,8 @@ namespace LoginAssessment.Data
 
         public bool IsPreviousPasswordAndPassphraseUsed { get; set; }
 
+        public int LoginTypeId { get; set; }
+
         public DateTime LoginDateTime { get; set; }
 
         public LoginPreference LoginPreference { get; set; }
@@ -30,5 +32,7 @@ namespace LoginAssessment.Data
         public LoginDevice LoginDevice { get; set; }
 
         public ApplicationUser User { get; set; }
+
+        public LoginType LoginType { get; set; }
     }
 }

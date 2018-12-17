@@ -7,7 +7,7 @@
                     Thank you for participating.
                 </p>
                 <div>
-                    <span>Please click&nbsp;<a href="/Home/PasswordReset" style="color: blue">here&nbsp;</a>to reset your password or&nbsp;<a href="/Home/LoginPassphrase?emailAddress=@ViewBag.Email" style="color: blue">continue</a> to the passphrase login.</span>
+                    <span>Please click&nbsp;<a href="/Home/PasswordReset" style="color: blue">here&nbsp;</a>to reset your password or&nbsp;<a href="/Home/LoginPassphrase?emailAddress=@ViewBag.Email" style="color: blue">continue</a> to the passphrase login. Alternatively, try to&nbsp;<a href="/Home/Login" style="color: blue">login again.</a></span>
                 </div>
             }
             else if (ViewBag.PassphraseFailComplete)
@@ -16,14 +16,24 @@
                     Thank you for participating.
                 </p>
                 <div>
-                    <span>Please click&nbsp;<a href="/Home/PassphraseReset" style="color: blue">here</a>&nbsp;reset your passphrase or login again tomorrow.</span>
+                    <span>Please click&nbsp;<a href="/Home/PassphraseReset" style="color: blue">here</a>&nbsp;reset your passphrase or login again tomorrow. Alternatively, try to&nbsp;<a href="/Home/Login" style="color: blue">login again.</a></span>
                 </div>
+                <form>
+                    <div>
+                        <a href="/Home/Login" class="btn btn-default submit">Back to Login</a>
+                    </div>
+                </form>
             }
             else
             {
                 <p>
                     Thank you for participating. Please login again tomorrow.
                 </p>
+                <form>
+                    <div>
+                        <a href="/Home/Login" class="btn btn-default submit">Back to Login</a>
+                    </div>
+                </form>
             }
         </section>
     </div>
