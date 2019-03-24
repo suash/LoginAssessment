@@ -146,7 +146,7 @@ app.controller('RegisterController', function ($scope, $window) {
         var form = $scope.registerForm;
         if (form.password.$modelValue) {
             var passwordValue = form.password.$modelValue;
-            $scope.isValidLength = passwordValue.length > 8;
+            $scope.isValidLength = passwordValue.length > 7;
             $scope.hasSpecialCharacter = new RegExp('[`~!@#$%^&*()\\-\\_=+,<.>]').test(passwordValue);
             $scope.hasDigit = new RegExp('[0-9]').test(passwordValue);
             $scope.hasLowercaseLetter = new RegExp('[a-z]').test(passwordValue);
@@ -251,7 +251,7 @@ app.controller('PasswordResetController', function ($scope) {
         var form = $scope.passwordResetForm;
         if (form.password.$modelValue) {
             var passwordValue = form.password.$modelValue;
-            $scope.isValidLength = passwordValue.length > 8;
+            $scope.isValidLength = passwordValue.length > 7;
             $scope.hasSpecialCharacter = new RegExp('[`~!@#$%^&*()\\-\\_=+,<.>]').test(passwordValue);
             $scope.hasDigit = new RegExp('[0-9]').test(passwordValue);
             $scope.hasLowercaseLetter = new RegExp('[a-z]').test(passwordValue);
